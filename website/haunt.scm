@@ -59,12 +59,12 @@
 (define home-page
   (static-page "QPCalc" "index.html"
     `((h1 "QPCalc")
-      (p "A quad precision calculator."
+      (p "A quad precision calculator.  "
 	 "Built using "
 	 (a (@ (href "https://github.com/gambiteer/EndlessBits")) "EndlessBits")
-	 "engine. ")
-      (p "Built with "
-         (a (@ (href "https://www.lambdanative.org/")) "LambdaNative"))
+         " and the "
+         (a (@ (href "https://www.lambdanative.org/")) "LambdaNative")
+	 " framework.")
 
 
       (h2 "Download")
@@ -82,7 +82,8 @@
          " through the "
          (a (@ (href "https://nlnet.nl/project/F-Droid-LambdaNative/"))
             "LambdaNative F-Droid integration project")
-         "."))))
+         "."
+         (image "/images/NLnetLogo.png")))))
 
 (site #:title "QPCalc"
       #:domain "bkmgit.github.io"
