@@ -37,7 +37,10 @@ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
 
-;; This calculator app uses the endlessbits library
+;; This calculator app uses the endlessbits library which is
+;; available under the MIT License
+
+(include "EndlessBits/src/CReals.scm")
 
 (define gui #f)
 (define calculator-display-num1 #f)
@@ -71,6 +74,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 (define val1 "")
 (define val2 "")
 
+(define display-precision 8)
+
 (define (xind button-number)
   (fxremainder button-number 4))
 
@@ -99,39 +104,59 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                                   calc_14.fnt   
 				  button-callback)))
 
+(define (calculate-value operation val1 val2)
+  (cond
+    ((and (member operation `("+")) (not answer))
+     (set! answer (CR->string (CR+ (string->number (string-append "#e" val1))
+                                   (string->number (string-append "#e" val2))))))
+    ((and (member operation `("-")) (not answer))
+     (set! answer (CR->string (CR- (string->number (string-append "#e" val1))
+                                   (string->number (string-append "#e" val2))))))
+    ((and (member operation `("*")) (not answer))
+     (set! answer (CR->string (CR* (string->number (string-append "#e" val1))
+                                   (string->number (string-append "#e" val2))))))
+    ((and (member operation `("/")) (not answer))
+     (set! answer (CR->string (CR/ (string->number (string-append "#e" val1))
+				   (string->number (string-append "#e" val2)))))))
+   (glgui-widget-set! gui calculator-display-answer 'label (substring answer 2 34)))
+
 
 (define (calculator-input in)
   (cond
     ((member in calculator-operations)
-     (if (not operation)
+     (if (and (not operation) (not answer))
        (begin
 	 (set! operation in)
 	 (glgui-widget-set! gui calculator-display-operation 'label in)
          (glgui-widget-set! gui calculator-display-num1 'focus #f)
          (glgui-widget-set! gui calculator-display-num2 'focus #t))))
     ((member in `("="))
-     (if (and (not (eq? operation #f)) (not (eq? (string->list val1) `())) (not (eq? (string->list val2) `())))
+     (if (and (not answer) (not (eq? operation #f)) (not (eq? (string->list val1) `())) (not (eq? (string->list val2) `())))
        (begin
          (glgui-widget-set! gui calculator-display-num2 'focus #f)
-         (glgui-widget-set! gui calculator-display-answer 'label "getting answer"))))
-    ((member in calculator-digits) 
-     (if (not operation)
+	 (calculate-value operation val1 val2))))
+    ((member in calculator-digits)
+     (if (not answer)
        (begin
-         (set! val1 (string-append val1 in))
-	 (glgui-widget-set! gui calculator-display-num1 'label val1))
-       (begin
-         (set! val2 (string-append val2 in))
-         (glgui-widget-set! gui calculator-display-num2 'label val2))))
+	 (if (not operation)
+	   (begin
+	     (set! val1 (string-append val1 in))
+	     (glgui-widget-set! gui calculator-display-num1 'label val1))
+	   (begin
+	     (set! val2 (string-append val2 in))
+	     (glgui-widget-set! gui calculator-display-num2 'label val2))))))
     ((member in `("."))
-     (if (not operation)
-       (if (not (member #\. (string->list val1)))
-         (begin
-           (set! val1 (string-append val1 in))
-	   (glgui-widget-set! gui calculator-display-num1 'label val1)))
-       (if (not (member #\. (string->list val2)))
-         (begin
-           (set! val2 (string-append val2 in))
-	   (glgui-widget-set! gui calculator-display-num2 'label val2))))) ))
+     (if (not answer)
+       (begin
+       (if (not operation)
+	 (if (not (member #\. (string->list val1)))
+	   (begin
+	     (set! val1 (string-append val1 in))
+	     (glgui-widget-set! gui calculator-display-num1 'label val1)))
+	 (if (not (member #\. (string->list val2)))
+	   (begin
+	     (set! val2 (string-append val2 in))
+	     (glgui-widget-set! gui calculator-display-num2 'label val2))))))) ))
 
 
 ;; ------------------
