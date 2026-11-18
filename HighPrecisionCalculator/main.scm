@@ -1,6 +1,7 @@
 #|
 LambdaNative - a cross-platform Scheme framework
 Copyright (c) 2009-2013, University of British Columbia
+Copyright (c) 2026, Benson Muite
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or
@@ -36,68 +37,102 @@ OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 |#
 
-;; This simple calculator app uses the gambit in-fix interpreter
-;; It handles fractions, complex numbers, and large fixnums!
+;; This calculator app uses the endlessbits library
 
 (define gui #f)
-(define calculator-subdisplay #f)
-(define calculator-display #f)
+(define calculator-display-num1 #f)
+(define calculator-display-operation #f)
+(define calculator-display-num2 #f)
+(define calculator-display-answer #f)
 
-(define keypad `((
-  ( (#\A "AC") (#\M "MC") #\C (,delchar ,glgui_keypad_delete.img) )
-  ( (#\a "Ans") (#\m "Mem")  (#\p "M+") (#\q "M-") )
-  ( #\( #\) (#\S ,sqrt.img) #\/ )
-  ( #\7 #\8 #\9 #\* )
-  ( #\4 #\5 #\6 #\- )
-  ( #\1 #\2 #\3 #\+ )
-  ( (#\0 "0" 2.)  #\. (#\= "=" 1. ,DarkOrange))
-)))
 
-(define Ans #f)
-(define Mem 0)
+(define square-width 40)
+(define square-border 2)
+(define inner-square-width (- square-width (* square-border 2)))
 
-;; suppress floating point inaccuracies
-(define (number->neatstring n)
-  (if (not (##flonum? n)) (number->string n)
-    (let* ((s (number->string (fl/ (flfloor (fl+ (fl* (flo n) 1.0e10) 0.5)) 1.0e10)))
-           (sl (string-length s))
-           (b (substring s 0 1))
-           (e (substring s (- sl 1) sl)))
-      (string-append (if (string=? b ".") "0" "")
-         (if (string=? e ".") (substring s 0 (- sl 1)) s)))))
+(define keypad-button-symbols
+  `( "7" "8" "9" "/"
+     "4" "5" "6" "*"
+     "1" "2" "3" "-"
+     "0" "." "=" "+"))
 
-(define (calculator-updatesub)
-  (glgui-widget-set! gui calculator-subdisplay 'label
-    (string-append "Mem=" (number->neatstring Mem) " Ans=" (if Ans (number->neatstring Ans) "") " ")))
+(define calculator-operations `("/" "*" "-" "+"))
 
-(define (calculator-evaluate)
-  (let* ((e (glgui-widget-get gui calculator-display 'label))
-         (evalstr (string-append "\\" e ";"))
-         (res (with-input-from-string evalstr (lambda ()
-           (with-exception-catcher (lambda (e) #f) (lambda () (eval (read))))))))
-    (set! Ans (if (eq? res (void)) #f res))
-    (glgui-widget-set! gui calculator-display 'label (if Ans (number->neatstring Ans) ""))
-    (glgui-widget-set! gui calculator-display 'bgcolor (if Ans #f Red))
-    (calculator-updatesub)))
+(define calculator-digits `("0" "1" "2" "3" "4" "5" "6" "7" "8" "9"))
 
-(define (calculator-C)  (glgui-widget-set! gui calculator-display 'label ""))
-(define (calculator-AC) (calculator-C) (set! Ans #f) (set! Mem 0) (calculator-updatesub))
-(define (calculator-MC) (set! Mem 0) (calculator-updatesub))
+(define keypad-buttons
+  `(#f #f #f #f
+    #f #f #f #f
+    #f #f #f #f
+    #f #f #f #f))
 
-(define (calculator-Mem)
-  (let ((curstr (glgui-widget-get gui calculator-display 'label)))
-    (glgui-widget-set! gui calculator-display 'label (string-append curstr "Mem"))))
+(define answer #f)
+(define operation #f)
+(define val1 "")
+(define val2 "")
 
-(define (calculator-Ans)
-  (let ((curstr (glgui-widget-get gui calculator-display 'label)))
-    (glgui-widget-set! gui calculator-display 'label (string-append curstr "Ans"))))
+(define (xind button-number)
+  (fxremainder button-number 4))
 
-(define (calculator-M+) (if Ans (set! Mem (+ Mem Ans))) (calculator-updatesub))
-(define (calculator-M-) (if Ans (set! Mem (- Mem Ans))) (calculator-updatesub))
+(define (yind button-number)
+  (fxquotient button-number 4))
 
-(define (calculator-sqrt)
-  (let ((curstr (glgui-widget-get gui calculator-display 'label)))
-    (glgui-widget-set! gui calculator-display 'label (string-append curstr "sqrt("))))
+(define (get-button-x x)
+  (- (fxquotient x square-width) 4))
+
+(define (get-button-y y)
+  (- 11 (fxquotient y square-width) 1))
+
+(define (button-callback gui b t x y)
+  (set! button-number (+ (get-button-x x)
+                         (* (get-button-y y) 4)))
+  (calculator-input (list-ref keypad-button-symbols button-number)))
+
+(define (create-button button-number)
+  (list-set! keypad-buttons button-number
+             (glgui-button-string gui
+                                  (+ (* (xind button-number) square-width) square-border)
+                                  (- (glgui-height-get) (+ 120 (* square-width (yind button-number))))
+                                  inner-square-width
+                                  inner-square-width
+                                  (list-ref keypad-button-symbols (+ (xind button-number)  (* (yind button-number) 4)))
+                                  calc_14.fnt   
+				  button-callback)))
+
+
+(define (calculator-input in)
+  (cond
+    ((member in calculator-operations)
+     (if (not operation)
+       (begin
+	 (set! operation in)
+	 (glgui-widget-set! gui calculator-display-operation 'label in)
+         (glgui-widget-set! gui calculator-display-num1 'focus #f)
+         (glgui-widget-set! gui calculator-display-num2 'focus #t))))
+    ((member in `("="))
+     (if (and (not (eq? operation #f)) (not (eq? (string->list val1) `())) (not (eq? (string->list val2) `())))
+       (begin
+         (glgui-widget-set! gui calculator-display-num2 'focus #f)
+         (glgui-widget-set! gui calculator-display-answer 'label "getting answer"))))
+    ((member in calculator-digits) 
+     (if (not operation)
+       (begin
+         (set! val1 (string-append val1 in))
+	 (glgui-widget-set! gui calculator-display-num1 'label val1))
+       (begin
+         (set! val2 (string-append val2 in))
+         (glgui-widget-set! gui calculator-display-num2 'label val2))))
+    ((member in `("."))
+     (if (not operation)
+       (if (not (member #\. (string->list val1)))
+         (begin
+           (set! val1 (string-append val1 in))
+	   (glgui-widget-set! gui calculator-display-num1 'label val1)))
+       (if (not (member #\. (string->list val2)))
+         (begin
+           (set! val2 (string-append val2 in))
+	   (glgui-widget-set! gui calculator-display-num2 'label val2))))) ))
+
 
 ;; ------------------
 
@@ -109,33 +144,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     (set! gui (make-glgui))
     (let* ((w (glgui-width-get))
            (h (glgui-height-get)))
-      (set! calculator-subdisplay (glgui-label gui 0 (- h 20) w 20 "" calc_14.fnt White))
-      (glgui-widget-set! gui calculator-subdisplay 'align GUI_ALIGNRIGHT)
-      (set! calculator-display (glgui-label gui 5 (- h 80) (- w 10) 60 "" calc_32.fnt White))
-      (glgui-widget-set! gui calculator-display 'align GUI_ALIGNRIGHT)
-      (glgui-widget-set! gui calculator-display 'focus #t)
-      (let ((wgt (glgui-keypad gui 5 5 (- w 10) (- h 80 5) calc_24.fnt keypad)))
-        (glgui-widget-set! gui wgt 'rounded #f)
-        (glgui-widget-set! gui wgt 'floatinghighlight #f))
-      (calculator-updatesub)
+      (set! calculator-display-num1 (glgui-label gui 0 (- h 25) w 25 "" calc_14.fnt White))
+      (glgui-widget-set! gui calculator-display-num1 'align GUI_ALIGNRIGHT)
+      (glgui-widget-set! gui calculator-display-num1 'focus #t)
+      (set! calculator-display-operation (glgui-label gui 0 (- h 45) w 25 "" calc_14.fnt White))
+      (glgui-widget-set! gui calculator-display-operation 'align GUI_ALIGNLEFT)
+      (set! calculator-display-num2 (glgui-label gui 0 (- h 65) w 25 "" calc_14.fnt White))
+      (glgui-widget-set! gui calculator-display-num2 'align GUI_ALIGNRIGHT)
+      (set! calculator-display-answer (glgui-label gui 0 (- h 85) w 25 "" calc_14.fnt White))
+      (glgui-widget-set! gui calculator-display-answer 'align GUI_ALIGNRIGHT)
+      ;; Create buttons
+      (let loop((button-number 16))
+        (if (= button-number 0)
+          (set! button-number 0) ;; exit
+          (begin (create-button (- button-number 1))
+                 (loop (- button-number 1)))))
     ))
 ;; events
   (lambda (t x y)
-    (let ((skipevent #f))
-      (if (= t EVENT_KEYRELEASE)
-        (cond
-          ((= x EVENT_KEYESCAPE)     (terminate))
-          ((= x (char->integer #\=)) (calculator-evaluate) (set! skipevent #t))
-          ((= x (char->integer #\A)) (calculator-AC) (set! skipevent #t))
-          ((= x (char->integer #\C)) (calculator-C) (set! skipevent #t))
-          ((= x (char->integer #\M)) (calculator-MC) (set! skipevent #t))
-          ((= x (char->integer #\p)) (calculator-M+) (set! skipevent #t))
-          ((= x (char->integer #\q)) (calculator-M-) (set! skipevent #t))
-          ((= x (char->integer #\a)) (calculator-Ans) (set! skipevent #t))
-          ((= x (char->integer #\m)) (calculator-Mem) (set! skipevent #t))
-          ((= x (char->integer #\S)) (calculator-sqrt) (set! skipevent #t))
-        ))
-      (if (not skipevent) (glgui-event gui t x y))))
+    (if (= t EVENT_KEYRELEASE)
+      (cond
+        ((= x EVENT_KEYESCAPE)     (terminate))
+      ))
+    (glgui-event gui t x y))
 ;; termination
   (lambda () #t)
 ;; suspend
