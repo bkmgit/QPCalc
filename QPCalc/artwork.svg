@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="42.209999mm"
+   height="42.209999mm"
+   viewBox="0 0 42.209999 42.209999"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   sodipodi:docname="artwork.svg"
+   inkscape:export-filename="black.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.3938106"
+     inkscape:cx="83.58381"
+     inkscape:cy="86.094911"
+     inkscape:window-width="1596"
+     inkscape:window-height="841"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     showgrid="false" />
+  <defs
+     id="defs1">
+    <rect
+       x="-91.834572"
+       y="-101.16152"
+       width="376.66524"
+       height="61.701353"
+       id="rect1" />
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(11.105,11.105)">
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.21;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:0"
+       id="rect2"
+       width="42"
+       height="42"
+       x="-11"
+       y="-11" />
+    <text
+       xml:space="preserve"
+       id="text1"
+       style="font-style:normal;font-variant:normal;font-weight:200;font-stretch:normal;font-size:2.85815px;font-family:'Source Code Pro';-inkscape-font-specification:'Source Code Pro Ultra-Light';writing-mode:lr-tb;direction:ltr;white-space:pre;fill:#99ff55;stroke:#99ff55;stroke-width:0.377953;stroke-linejoin:round"
+       transform="matrix(-0.86400001,1.4964919,-1.4964919,-0.86400001,-49.326544,37.63675)"><textPath
+         xlink:href="#path1"
+         id="textPath1"><tspan
+           id="tspan1"
+           style="font-style:normal;font-variant:normal;font-weight:200;font-stretch:normal;font-size:2.85815px;font-family:'Source Code Pro';-inkscape-font-specification:'Source Code Pro Ultra-Light';fill:#99ff55;stroke:#99ff55">230258.50929940456840179914546843</tspan></textPath></text>
+    <path
+       sodipodi:type="spiral"
+       style="display:none;fill:#ececec;fill-rule:evenodd;stroke:#ececec;stroke-width:0.264583"
+       id="path1"
+       sodipodi:cx="-67.441017"
+       sodipodi:cy="-38.025253"
+       sodipodi:expansion="1"
+       sodipodi:revolution="3.0429478"
+       sodipodi:radius="70.369385"
+       sodipodi:argument="-18.829901"
+       sodipodi:t0="0"
+       d="m -67.441017,-38.025253 c 3.47774,0.06836 1.62364,4.721653 -0.113626,5.780233 -4.707886,2.868687 -10.10936,-1.501074 -11.446841,-6.007486 -2.392439,-8.060913 4.230865,-15.64264 11.901345,-17.113447 11.256739,-2.158469 21.275281,6.974328 22.780055,17.795204 2.005628,14.422526 -9.719584,26.946376 -23.689064,28.4466623 -17.579164,1.8879573 -32.636572,-12.4649473 -34.113272,-29.5829233 -1.78847,-20.732163 15.210225,-38.337693 35.476786,-39.779877 23.883441,-1.699563 44.04564,17.955416 45.446483,41.370643 1.61733,27.033807 -20.700557,49.758146 -47.264502,51.113091 -30.183642,1.539574 -55.473847,-23.4456692 -56.779697,-53.158362 -1.46497,-33.333151 26.190764,-61.191875 59.052221,-62.446305 36.482445,-1.39266 66.9116413,28.935853 68.1129118,64.946081 0.2098739,6.291346 -0.4424049,12.607145 -1.921795059277,18.725318"
+       transform="matrix(0.26458333,0,0,0.26458333,-11.105,-11.105)" />
+  </g>
+  <metadata
+     id="metadata2">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <cc:license
+           rdf:resource="http://artlibre.org/licence/lal" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://artlibre.org/licence/lal">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

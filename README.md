@@ -1,10 +1,10 @@
-# A High Precision Calculator
+# A Quad Precision Calculator
 
 The Calculator is written in [Gambit Scheme](https://gambitscheme.org/)
 and uses [LambdaNative](http://www.lambdanative.org/) framework to
-allow for creation of a mobile application.  High precision is enabled
-by using the [EndlessBits](https://github.com/gambiteer/EndlessBits)
-library.
+allow for creation of a mobile application.  Results are displayed to
+quadruple precision which is enabled by using the
+[EndlessBits](https://github.com/gambiteer/EndlessBits) library.
 
 ## Funding
 
